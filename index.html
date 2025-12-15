@@ -1,709 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CoolTech Solutions - Custom Air Conditioning Installation</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #00d4ff;
-            --secondary: #0066ff;
-            --dark: #0a0e27;
-            --light: #ffffff;
-            --accent: #ff006e;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--dark);
-            color: var(--light);
-            overflow-x: hidden;
-        }
-
-        /* Loading Screen */
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            transition: opacity 0.5s ease;
-        }
-
-        #loading-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .loader-container {
-            position: relative;
-            width: 200px;
-            height: 200px;
-        }
-
-        .snowflake {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            animation: rotate 3s linear infinite;
-        }
-
-        .snowflake-inner {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: var(--primary);
-            border-radius: 50%;
-            box-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
-        }
-
-        .snowflake-inner:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
-        .snowflake-inner:nth-child(2) { top: 50%; right: 0; transform: translateY(-50%); }
-        .snowflake-inner:nth-child(3) { bottom: 0; left: 50%; transform: translateX(-50%); }
-        .snowflake-inner:nth-child(4) { top: 50%; left: 0; transform: translateY(-50%); }
-        .snowflake-inner:nth-child(5) { top: 20%; right: 20%; }
-        .snowflake-inner:nth-child(6) { bottom: 20%; right: 20%; }
-        .snowflake-inner:nth-child(7) { bottom: 20%; left: 20%; }
-        .snowflake-inner:nth-child(8) { top: 20%; left: 20%; }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            margin-top: 40px;
-            font-size: 24px;
-            font-weight: 600;
-            letter-spacing: 3px;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .loading-bar {
-            width: 300px;
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            margin-top: 20px;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .loading-progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            animation: loading 2s ease-in-out;
-            border-radius: 2px;
-        }
-
-        @keyframes loading {
-            from { width: 0%; }
-            to { width: 100%; }
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(10, 14, 39, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 20px 5%;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
-        }
-
-        .nav-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--light);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            position: relative;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary);
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            padding-top: 80px;
-        }
-
-        .hero-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%);
-        }
-
-        .particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        .particle {
-            position: absolute;
-            background: var(--primary);
-            border-radius: 50%;
-            animation: float 15s infinite;
-            opacity: 0.3;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-100px) translateX(50px); }
-            50% { transform: translateY(-50px) translateX(-50px); }
-            75% { transform: translateY(-150px) translateX(25px); }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            max-width: 900px;
-            padding: 0 20px;
-        }
-
-        .hero h1 {
-            font-size: 64px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--primary), var(--light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.2;
-        }
-
-        .hero p {
-            font-size: 22px;
-            margin-bottom: 40px;
-            color: rgba(255,255,255,0.8);
-            line-height: 1.6;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 16px 40px;
-            font-size: 16px;
-            font-weight: 600;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--dark);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.5);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--light);
-            border: 2px solid var(--primary);
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary);
-            color: var(--dark);
-        }
-
-        /* Services Section */
-        .services {
-            padding: 100px 5%;
-            background: linear-gradient(180deg, var(--dark) 0%, #1a1f3a 100%);
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 48px;
-            margin-bottom: 60px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .services-grid {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-        }
-
-        .service-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 212, 255, 0.1);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .service-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .service-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
-        }
-
-        .service-card:hover::before {
-            opacity: 1;
-        }
-
-        .service-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .service-card h3 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-
-        .service-card p {
-            color: rgba(255,255,255,0.7);
-            line-height: 1.6;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 100px 5%;
-            background: var(--dark);
-        }
-
-        .features-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .feature-list {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: start;
-            gap: 20px;
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-
-        .feature-text h3 {
-            font-size: 20px;
-            margin-bottom: 8px;
-            color: var(--primary);
-        }
-
-        .feature-text p {
-            color: rgba(255,255,255,0.7);
-            line-height: 1.6;
-        }
-
-        .feature-visual {
-            position: relative;
-            height: 500px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 110, 0.1));
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .visual-element {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            border: 3px solid var(--primary);
-            border-radius: 50%;
-            animation: pulse-ring 2s ease-in-out infinite;
-        }
-
-        .visual-element:nth-child(2) {
-            animation-delay: 0.5s;
-            opacity: 0.6;
-        }
-
-        .visual-element:nth-child(3) {
-            animation-delay: 1s;
-            opacity: 0.3;
-        }
-
-        @keyframes pulse-ring {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-
-        /* Contact Section */
-        .contact {
-            padding: 100px 5%;
-            background: linear-gradient(180deg, var(--dark) 0%, #1a1f3a 100%);
-        }
-
-        .contact-content {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .contact-content h2 {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        .contact-content p {
-            font-size: 18px;
-            margin-bottom: 40px;
-            color: rgba(255,255,255,0.7);
-        }
-
-        .contact-info {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-            margin-top: 40px;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 18px;
-        }
-
-        .contact-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        /* Footer */
-        footer {
-            background: rgba(10, 14, 39, 0.95);
-            padding: 40px 5%;
-            text-align: center;
-            border-top: 1px solid rgba(0, 212, 255, 0.1);
-        }
-
-        footer p {
-            color: rgba(255,255,255,0.5);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 42px; }
-            .hero p { font-size: 18px; }
-            .section-title { font-size: 36px; }
-            .features-content { grid-template-columns: 1fr; }
-            .nav-links { display: none; }
-            .contact-info { flex-direction: column; align-items: center; }
-        }
-    </style>
+    <title>超级个体 - 专业定制空调安装服务</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <!-- Loading Screen -->
+
     <div id="loading-screen">
-        <div class="loader-container">
-            <div class="snowflake">
-                <div class="snowflake-inner"></div>
-                <div class="snowflake-inner"></div>
-                <div class="snowflake-inner"></div>
-                <div class="snowflake-inner"></div>
-                <div class="snowflake-inner"></div>
-                <div class="snowflake-inner"></div>
-                <div class="snowflake-inner"></div>
-                <div class="snowflake-inner"></div>
-            </div>
-        </div>
-        <div class="loading-text">COOLTECH SOLUTIONS</div>
-        <div class="loading-bar">
-            <div class="loading-progress"></div>
+        <div class="loader-content">
+            <div class="loader"></div>
+            <p>超级个体 | 正在构建您的专属空气系统...</p>
         </div>
     </div>
 
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-content">
-            <div class="logo">❄️ CoolTech</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#features">Why Choose Us</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
+    <main id="main-content" style="opacity: 0;"> 
+        
+        <header class="header">
+            <div class="logo">超级个体</div>
+            <nav class="nav">
+                <a href="#hero">首页</a>
+                <a href="#services">核心服务</a>
+                <a href="#process">技术流程</a>
+                <a href="#contact" class="btn btn-nav">立即预约</a>
+            </nav>
+        </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-background">
-            <div class="particles" id="particles"></div>
-        </div>
-        <div class="hero-content">
-            <h1>Custom Air Conditioning Excellence</h1>
-            <p>Premium HVAC installation tailored to your home. Experience cutting-edge climate control technology with expert craftsmanship and reliable service.</p>
-            <div class="cta-buttons">
-                <a href="#contact" class="btn btn-primary">Get Free Quote</a>
-                <a href="#services" class="btn btn-secondary">Our Services</a>
-            </div>
-        </div>
-    </section>
+        <section class="hero" id="hero">
+            <h1 class="fade-in-up">定制空气，智享舒适</h1>
+            <p class="subtitle fade-in-up delay-1">专注于高端别墅、大平层及商业空间环境系统解决方案</p>
+            <a href="#contact" class="btn btn-primary fade-in-up delay-2">免费获取定制方案</a>
+            <div class="scroll-down-indicator fade-in-up delay-3">↓ 探索更多专业服务</div>
+        </section>
 
-    <!-- Services Section -->
-    <section class="services" id="services">
-        <h2 class="section-title">Our Services</h2>
-        <div class="services-grid">
-            <div class="service-card">
-                <span class="service-icon">🏠</span>
-                <h3>Custom Installation</h3>
-                <p>Tailored AC solutions designed for your specific space requirements. We analyze your home's layout, insulation, and cooling needs to provide the perfect system.</p>
+        <section class="services fade-in-on-scroll" id="services">
+            <h2>🌬️ 我们的核心服务</h2>
+            <div class="service-container">
+                <div class="service-item">
+                    <h3>别墅/大宅系统</h3>
+                    <p>多联机、地暖、新风三位一体，实现全屋恒温恒湿恒氧。</p>
+                </div>
+                <div class="service-item">
+                    <h3>商业空间定制</h3>
+                    <p>为办公楼、酒店、餐饮提供高能效、低噪音的中央空调系统。</p>
+                </div>
+                <div class="service-item">
+                    <h3>隐蔽工程施工</h3>
+                    <p>严格执行德系安装标准，所有隐蔽管线工艺均可拍照存档。</p>
+                </div>
             </div>
-            <div class="service-card">
-                <span class="service-icon">⚡</span>
-                <h3>Energy-Efficient Systems</h3>
-                <p>State-of-the-art units that reduce energy consumption and lower your utility bills while maintaining optimal comfort levels year-round.</p>
-            </div>
-            <div class="service-card">
-                <span class="service-icon">🔧</span>
-                <h3>Professional Service</h3>
-                <p>Licensed, insured technicians with decades of combined experience. We handle everything from assessment to installation with precision.</p>
-            </div>
-            <div class="service-card">
-                <span class="service-icon">🌡️</span>
-                <h3>Climate Control Solutions</h3>
-                <p>Advanced temperature management systems with smart thermostats, zoning options, and humidity control for perfect indoor environments.</p>
-            </div>
-            <div class="service-card">
-                <span class="service-icon">🛡️</span>
-                <h3>Warranty & Support</h3>
-                <p>Comprehensive warranties on all installations with 24/7 emergency service. Your investment is protected with our satisfaction guarantee.</p>
-            </div>
-            <div class="service-card">
-                <span class="service-icon">♻️</span>
-                <h3>Eco-Friendly Options</h3>
-                <p>Environmentally conscious HVAC solutions featuring sustainable refrigerants and ENERGY STAR® certified equipment for reduced carbon footprint.</p>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <h2 class="section-title">Why Choose CoolTech?</h2>
-        <div class="features-content">
-            <div class="feature-list">
-                <div class="feature-item">
-                    <div class="feature-icon">✓</div>
-                    <div class="feature-text">
-                        <h3>Expert Consultation</h3>
-                        <p>Free in-home assessments to determine the ideal system size and configuration for maximum efficiency and comfort.</p>
+        <section class="advantage fade-in-on-scroll">
+            <h2>🛠️ 行业领先的施工标准</h2>
+            <p class="subtitle">看得到的美观，看不见的专业</p>
+            <div class="advantage-container">
+                <div class="advantage-item">
+                    <div class="icon">📐</div>
+                    <h4>设计驱动</h4>
+                    <p>精确计算冷热负荷，避免大马拉小车，确保能效最优。</p>
+                </div>
+                <div class="advantage-item">
+                    <div class="icon">🔬</div>
+                    <h4>辅材认证</h4>
+                    <p>只选用 B1 级防火保温棉、进口铜管，杜绝劣质辅材隐患。</p>
+                </div>
+                <div class="advantage-item">
+                    <div class="icon">✅</div>
+                    <h4>终身档案</h4>
+                    <p>为每个项目建立电子档案，终身跟踪，提供详细报价清单和多种付款方式</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="interactive fade-in-on-scroll" id="process">
+            <div class="interactive-container">
+                <div class="interactive-visual">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="center-icon">❄️</div>
+                </div>
+                <div class="interactive-content">
+                    <h2>我们的服务流程</h2>
+                    <ul class="interactive-list">
+                        <li>免费上门勘察，精确测量空间</li>
+                        <li>定制专属方案，详细报价说明</li>
+                        <li>专业团队施工，标准化安装流程</li>
+                        <li>严格质量检测，确保安全运行</li>
+                        <li>售后跟踪服务，定期保养维护</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact fade-in-on-scroll" id="contact">
+            <div class="contact-container">
+                <h2>联系我们</h2>
+                <p>立即获取专业咨询和免费报价</p>
+                <a href="tel:4008888888" class="btn btn-primary">预约咨询</a>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-item-icon">📞</div>
+                        <h4>服务热线</h4>
+                        <p>400-888-8888</p>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-item-icon">✉️</div>
+                        <h4>电子邮箱</h4>
+                        <p>service@supergti.com</p>
                     </div>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon">✓</div>
-                    <div class="feature-text">
-                        <h3>Premium Brands</h3>
-                        <p>We install top-tier equipment from industry leaders including Carrier, Lennox, Trane, and other trusted manufacturers.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">✓</div>
-                    <div class="feature-text">
-                        <h3>Clean Installation</h3>
-                        <p>Professional service with respect for your property. We use protective coverings and ensure thorough cleanup after every job.</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">✓</div>
-                    <div class="feature-text">
-                        <h3>Flexible Financing</h3>
-                        <p>Multiple payment options and special financing available to make your comfort upgrade affordable and accessible.</p>
-                    </div>
-                </div>
             </div>
-            <div class="feature-visual">
-                <div class="visual-element"></div>
-                <div class="visual-element"></div>
-                <div class="visual-element"></div>
-            </div>
-        </div>
-    </section>
+        </section>
+        
+        <footer class="footer">
+            <p>&copy; 2025 超级个体. All rights reserved. | 沪ICP备 XXXXXXX 号</p>
+        </footer>
 
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <div class="contact-content">
-            <h2>Ready to Upgrade Your Comfort?</h2>
-            <p>Get in touch with our team of experts today for a free consultation and quote. We're here to answer your questions and help you find the perfect cooling solution.</p>
-            <a href="#" class="btn btn-primary">Schedule Consultation</a>
-            <div class="contact-info">
-                <div class="contact-item">
-                    <div class="contact-icon">📞</div>
-                    <span>(555) 123-4567</span>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon">✉️</div>
-                    <span>info@cooltech.com</span>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon">📍</div>
-                    <span>Serving Your Area</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 CoolTech Solutions. All rights reserved. Licensed & Insured HVAC Contractors.</p>
-    </footer>
-
-    <script>
-        // Loading Screen Animation
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.getElementById('loading-screen').classList.add('hidden');
-            }, 2000);
-        });
-
-        // Particle Generation
-        const particlesContainer = document.getElementById('particles');
-        for (let i = 0; i < 50; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.width = Math.random() * 4 + 2 + 'px';
-            particle.style.height = particle.style.width;
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            particle.style.animationDuration = Math.random() * 10 + 10 + 's';
-            particle.style.animationDelay = Math.random() * 5 + 's';
-            particlesContainer.appendChild(particle);
-        }
-
-        // Smooth Scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-    </script>
+    </main>
+    
+    <script src="script.js"></script> 
 </body>
 </html>
